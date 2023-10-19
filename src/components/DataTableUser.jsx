@@ -4,7 +4,6 @@ import dataFixtures from './dataFixtures';
 
 const DataTableUser = () => {
     const [data, setData] = useState(dataFixtures);
-    const [deteUser, setDeleteUser] = useState();
     const [newItem, setNewItem] = useState({id: '', nom: '', prenom: '', age: '', email: '', commandes: ''});
     const [editingId, setEditingId] = useState(null);
     const [users, setUsers] = useState([]);
@@ -169,7 +168,7 @@ const DataTableUser = () => {
                             {editingId === item.id ? (
                                 <>
                                     <button
-                                        onClick={() => handleUpdate(item.id)}
+                                        onClick={() => handleUpdate(item.id, item.nom, item.prenom, item.age, item.email)}
                                         className="bg-green-500 text-white px-2 py-1 mr-2"
                                     >
                                         Update
