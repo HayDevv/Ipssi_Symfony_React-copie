@@ -4,6 +4,7 @@ import dataFixtures from './dataFixtures';
 
 const DataTableUser = () => {
     const [data, setData] = useState(dataFixtures);
+    const [deteUser, setDeleteUser] = useState();
     const [newItem, setNewItem] = useState({id: '', nom: '', prenom: '', age: '', email: '', commandes: ''});
     const [editingId, setEditingId] = useState(null);
     const [users, setUsers] = useState([]);
@@ -49,10 +50,17 @@ const DataTableUser = () => {
         setEditingId(null);
     };
 
-    const handleDelete = (id) => {
-        const updatedData = data.filter((item) => item['@id'] !== id);
-        setData(updatedData);
-    };
+    async function handleDelete (id){
+        let response = await  fetch(`https://localhost:8000/api/utilisateurs/${id}`, {
+            method: 'DELETE'
+        })
+        const status = response.status;
+
+        if (status === 204) {
+            alert('Suppression réussie.');
+            window.location.reload();
+        }
+    }
 
     const handleInputChange = (e, key) => {
         const value = e.target.value;
@@ -68,8 +76,13 @@ const DataTableUser = () => {
             },
             body: JSON.stringify({nom, prenom, age, email})
         })
-        const data = await response.json();
-        // console.log(data)
+
+        const status = response.status;
+
+        if (status === 201) {
+            alert('Creation réussie.');
+            window.location.reload();
+        }
     }
 
     const handleAdd = () => {
@@ -85,10 +98,7 @@ const DataTableUser = () => {
         }
     };
 
-    // console.log(users)
-    users.map((user) => {
-        console.log(user['@id'])
-    })
+
     return (
         <div className="container mx-auto mt-8">
             <h1 className="text-2xl font-bold mb-4">Tableau des Utilisateurs</h1>
