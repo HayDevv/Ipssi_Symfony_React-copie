@@ -45,7 +45,6 @@ const DetailsCommandes = () => {
     }
 
     function handleChangeQuantite(e) {
-        console.log(e.target.value)
         setQuantite(e.target.value)
     }
 
@@ -60,7 +59,7 @@ const DetailsCommandes = () => {
 
     async function handleAdd() {
 
-        const numberQuantite = Number(quantite)
+        let numberQuantite = Number(quantite)
 
         let response = await fetch(`https://localhost:8000/api/detail_commandes`, {
             method: 'POST',
@@ -77,7 +76,7 @@ const DetailsCommandes = () => {
             window.location.reload();
         }
     }
-
+    console.log(detailsCommande.produit)
     return (
         <div className="container mx-auto mt-8">
             <h1 className="text-2xl font-bold mb-4">Tableau de Commandes</h1>
@@ -95,12 +94,15 @@ const DetailsCommandes = () => {
                 {detailsCommande.map((item) => (
                     <tr key={item.id}>
                         <td className="border px-4 py-2">{item.id}</td>
-                        <td className="border px-4 py-2">
-                           Id: {item.produit.id}<br/>
-                            Nom: {item.produit.nomProduit}<br/>
-                            Prix: {item.produit.prix}<br/>
-                            Stock: {item.produit.stock}
-                        </td>
+                        {item.produit && (
+                            <td className="border px-4 py-2">
+                                Id: {item.produit.id}<br/>
+                                Nom: {item.produit.nomProduit}<br/>
+                                Prix: {item.produit.prix}<br/>
+                                Stock: {item.produit.stock}
+                            </td>
+                        )}
+
                         <td className="border px-4 py-2">{item.quantite}</td>
                         <td className="border px-4 py-2">
                             <>

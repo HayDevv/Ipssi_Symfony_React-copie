@@ -35,7 +35,7 @@ const Produit = () => {
         prix = Number(prix)
         stock = Number(stock)
 
-        let response = await fetch('https://localhost:8000/api/produits', {
+       return  await fetch('https://localhost:8000/api/produits', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/ld+json'
@@ -45,30 +45,29 @@ const Produit = () => {
 
     }
 
-    function handleAdd() {
-        if (!item.nomProduit || item.prix || item.stock) {
+    async function handleAdd() {
+        if (!item.nomProduit || !item.prix || !item.stock) {
             alert('Veuillez remplir tous les champs.');
         }
 
-        let response = createProduit(item.nomProduit, item.prix, item.stock)
+        let response = await createProduit(item.nomProduit, item.prix, item.stock)
 
         const status = response.status;
 
         if (status === 201) {
             alert('Creation réussie.');
-            window.location.reload();
         }
         setNewItem({nomProduit: '', prix: '', stock: ''});
+        window.location.reload();
 
     }
 
 
     const handleInputChange = (e, key) => {
         const value = e.target.value;
-        console.log(value, key)
         setNewItem({...item, [key]: value});
     };
-    console.log(produits)
+
     return (
         <div className="container mx-auto mt-8">
             <h1 className="text-2xl font-bold mb-4">Tableau des Produits</h1>

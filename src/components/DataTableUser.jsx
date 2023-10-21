@@ -118,7 +118,7 @@ const DataTableUser = () => {
             alert('Veuillez remplir tous les champs.');
         }
 
-        let response = await createUser(newItem.nom, newItem.prenom, newItem.age, newItem.email)
+        let response = await createUser('utilisateurs',newItem.nom, newItem.prenom, newItem.age, newItem.email)
 
         if (response.status === 201) {
             alert('Creation réussie.');
