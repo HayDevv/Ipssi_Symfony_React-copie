@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import dataFixtures from './dataFixtures';
+import {deleteMethod, getCommandes, getMethod} from "../function/httpFunction";
+import {getUsers} from "../function/userFunction";
 
-const DataTableUser = () => {
+const Commande = () => {
     const [data, setData] = useState(dataFixtures);
     const [newItem, setNewItem] = useState({id: '', nom: '', prenom: '', age: '', email: '', commandes: ''});
     const [editingId, setEditingId] = useState(null);
@@ -14,22 +16,9 @@ const DataTableUser = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost:8000/api/commandes')
-                let data = await response.json()
-                const commandes = await data['hydra:member'];
-                const commandesArray = [];
+                const commandesArray = await getMethod('commandes');
 
-                Object.keys(commandes).map((cle) => {
-                    commandesArray.push(commandes[cle])
-                });
-
-                const responseUsers = await fetch('https://localhost:8000/api/utilisateurs');
-                const dataUsers = await responseUsers.json();
-                const users = dataUsers['hydra:member'];
-                const usersArray = [];
-                Object.keys(users).map((cle) => {
-                    usersArray.push(users[cle])
-                });
+                const usersArray = await getMethod('utilisateurs');
                 setUsers(usersArray)
 
                 setCommandes(commandesArray)
@@ -41,9 +30,7 @@ const DataTableUser = () => {
     }, []);
 
     async function handleDelete(id) {
-        let response = await fetch(`https://localhost:8000/api/utilisateurs/${id}`, {
-            method: 'DELETE'
-        })
+        let response = await deleteMethod(id, 'commandes')
         const status = response.status;
 
         if (status === 204) {
@@ -152,11 +139,12 @@ const DataTableUser = () => {
                         {/*<td className="border px-4 py-2">{JSON.stringify(item)}</td>*/}
                         <td className="border px-4 py-2">{formatCommandDate(item.dateCommande)}</td>
                         <td className="border px-4 py-2">
-                            {item.utilisateur && Object.entries(item.utilisateur).map(([key, value], index) => (
-                                <div key={index}>
-                                    {key}: {value}
-                                </div>
-                            ))}
+                            {item.utilisateur && item.utilisateur.nom } - {item.utilisateur && item.utilisateur.prenom}
+                            {/*{item.utilisateur && Object.entries(item.utilisateur).map(([key, value], index) => (*/}
+                            {/*    <div key={index}>*/}
+                            {/*        {key}: {value}*/}
+                            {/*    </div>*/}
+                            {/*))}*/}
                         </td>
                         <td className="border px-4 py-2">
                             {editingId === item.id ? (
@@ -176,14 +164,14 @@ const DataTableUser = () => {
                                 </>
                             ) : (
                                 <>
-                                    <button
-                                        // onClick={() => handleEdit(item.id)}
-                                        className="bg-blue-500 text-white px-2 py-1 mr-2"
+                                    <a
+                                        href={`/unique-commande/${item.id}`}
+                                        className="bg-green-500 text-white px-2 py-1 mr-2"
                                     >
-                                        Edit
-                                    </button>
+                                        Voir
+                                    </a>
                                     <button
-                                        // onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleDelete(item.id)}
                                         className="bg-red-500 text-white px-2 py-1"
                                     >
                                         Delete
@@ -218,4 +206,4 @@ const DataTableUser = () => {
     );
 };
 
-export default DataTableUser;
+export default Commande;

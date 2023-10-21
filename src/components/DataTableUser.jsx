@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom';
 import dataFixtures from './dataFixtures';
+import {createUser} from '../function/userFunction'
+import {deleteMethod, getMethod, updateMethod} from "../function/httpFunction";
 
 const DataTableUser = () => {
     const [data, setData] = useState(dataFixtures);
@@ -8,16 +10,15 @@ const DataTableUser = () => {
     const [editingId, setEditingId] = useState(null);
     const [users, setUsers] = useState([]);
 
+    const [newNom, setNewNom] = useState(null);
+    const [newPrenom, setNewPrenom] = useState(null);
+    const [newAge, setNewAge] = useState(0);
+    const [newEmail, setNewEmail] = useState(null);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost:8000/api/utilisateurs');
-                const data = await response.json();
-                const users = data['hydra:member'];
-                const usersArray = [];
-                Object.keys(users).map((cle) => {
-                    usersArray.push(users[cle])
-                });
+                const usersArray = await getMethod('utilisateurs');
                 setUsers(usersArray)
             } catch (error) {
                 console.error('Une erreur s\'est produite :', error);
@@ -26,36 +27,43 @@ const DataTableUser = () => {
         fetchData();
     }, []);
 
-    async function getUsers() {
-        let response = await fetch('https://localhost:8000/api/utilisateurs')
-        let data = await response.json()
-        const users = await data['hydra:member'];
-        const usersArray = [];
-
-        Object.keys(users).map((cle) => {
-            usersArray.push(users[cle])
-        });
-
-        return usersArray;
-    }
-
     const handleEdit = (id) => {
+        alert("Attention il faut modifier TOUS les champs, on n'as pas eu le temps d'améliorer ca !");
         setEditingId(id);
     };
 
-    const handleUpdate = (id) => {
-        const updatedData = data.map((item) => (item['@id'] === id ? newItem : item));
-        setData(updatedData);
-        setEditingId(null);
-    };
+    const handleUpdate = async (id) => {
 
-    async function handleDelete (id){
-        let response = await  fetch(`https://localhost:8000/api/utilisateurs/${id}`, {
-            method: 'DELETE'
-        })
+        let object = {}; // Initialiser l'objet
+
+        // Vérification des valeurs et affectation à l'objet
+        if (newNom !== null && newNom !== '') {
+            object.nom = newNom;
+        }
+        if (newPrenom !== null && newPrenom !== '') {
+            object.prenom = newPrenom;
+        }
+        if (newAge !== null && newAge !== 0) {
+            object.age = parseInt(newAge, 10);
+        }
+        if (newEmail !== null && newEmail !== '') {
+            object.email = newEmail;
+        }
+
+        let response = await updateMethod(id, object, 'utilisateurs');
+
         const status = response.status;
 
-        if (status === 204) {
+        if (status === 200) {
+            alert('Modification réussie.');
+            window.location.reload();
+        }
+    };
+
+    async function handleDelete(id) {
+        let response = await deleteMethod(id, 'utilisateurs')
+
+        if (response.status === 204) {
             alert('Suppression réussie.');
             window.location.reload();
         }
@@ -66,34 +74,57 @@ const DataTableUser = () => {
         setNewItem({...newItem, [key]: value});
     };
 
-    async function createUser(nom, prenom, age, email) {
-        age = Number(age)
-        let response = await fetch('https://localhost:8000/api/utilisateurs', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/ld+json'
-            },
-            body: JSON.stringify({nom, prenom, age, email})
-        })
+    const handleInputChangeOnUpdate = (e) => {
+        const value = e.target.value;
+        const input = e.target.getAttribute('data-input');
 
-        const status = response.status;
+        switch (input) {
+            case 'nom' :
+                e.target.value =
+                    setNewNom(value);
+                break
+            case 'prenom':
+                setNewPrenom(value)
+                break
+            case 'age' :
+                setNewAge(value)
+                break
+            case 'email' :
+                setNewEmail(value)
+                break;
 
-        if (status === 201) {
-            alert('Creation réussie.');
-            window.location.reload();
         }
-    }
+    };
+    // async function createUser(nom, prenom, age, email) {
+    //     age = Number(age)
+    //     let response = await fetch('https://localhost:8000/api/utilisateurs', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/ld+json'
+    //         },
+    //         body: JSON.stringify({nom, prenom, age, email})
+    //     })
+    //
+    //     const status = response.status;
+    //
+    //     if (status === 201) {
+    //         alert('Creation réussie.');
+    //         window.location.reload();
+    //     }
+    // }
 
-    const handleAdd = () => {
-        if (newItem.nom && newItem.prenom && newItem.age && newItem.email) {
+    const handleAdd = async () => {
+        if (!newItem.nom || !newItem.prenom || !newItem.age || !newItem.email) {
+            alert('Veuillez remplir tous les champs.');
+        }
 
-            createUser(newItem.nom, newItem.prenom, newItem.age, newItem.email)
+        let response = await createUser(newItem.nom, newItem.prenom, newItem.age, newItem.email)
 
+        if (response.status === 201) {
+            alert('Creation réussie.');
             setData([...data, newItem]);
             setNewItem({nom: '', prenom: '', age: '', email: '', commandes: ''});
-
-        } else {
-            alert('Veuillez remplir tous les champs.');
+            window.location.reload();
         }
     };
 
@@ -120,8 +151,9 @@ const DataTableUser = () => {
                             {editingId === item.id ? (
                                 <input
                                     type="text"
-                                    value={newItem.nom}
-                                    onChange={(e) => handleInputChange(e, 'nom')}
+                                    value={newNom}
+                                    data-input="nom"
+                                    onChange={(e) => handleInputChangeOnUpdate(e)}
                                     className="w-full"
                                 />
                             ) : (
@@ -132,8 +164,9 @@ const DataTableUser = () => {
                             {editingId === item.id ? (
                                 <input
                                     type="text"
-                                    value={newItem.prenom}
-                                    onChange={(e) => handleInputChange(e, 'prenom')}
+                                    data-input="prenom"
+                                    value={newPrenom}
+                                    onChange={(e) => handleInputChangeOnUpdate(e)}
                                     className="w-full"
                                 />
                             ) : (
@@ -144,8 +177,9 @@ const DataTableUser = () => {
                             {editingId === item.id ? (
                                 <input
                                     type="text"
-                                    value={newItem.age}
-                                    onChange={(e) => handleInputChange(e, 'age')}
+                                    data-input="age"
+                                    value={newAge}
+                                    onChange={(e) => handleInputChangeOnUpdate(e)}
                                     className="w-full"
                                 />
                             ) : (
@@ -156,8 +190,9 @@ const DataTableUser = () => {
                             {editingId === item.id ? (
                                 <input
                                     type="text"
-                                    value={newItem.email}
-                                    onChange={(e) => handleInputChange(e, 'email')}
+                                    data-input="email"
+                                    value={newEmail}
+                                    onChange={(e) => handleInputChangeOnUpdate(e)}
                                     className="w-full"
                                 />
                             ) : (

@@ -2,6 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
 import DataTableUser from './components/DataTableUser';
 import Commande from "./components/Commande";
+import UniqueCommande from "./components/UniqueCommande";
+import Produit from "./components/Produit";
+import DetailCommande from "./components/DetailCommande";
 
 function App() {
     return (
@@ -17,6 +20,12 @@ function App() {
                                 <Link to="/commandes" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                                     Gerer les commandes
                                 </Link>
+                                <Link to="/produit" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+                                    Gerer les produits
+                                </Link>
+                                <Link to="/detail/commande" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+                                    Details Commandes
+                                </Link>
                                 {/* Ajoutez d'autres liens de navigation ici si nécessaire. */}
                             </div>
                         </div>
@@ -28,6 +37,9 @@ function App() {
                             <Routes>
                                 <Route path="/utilisateurs" element={<DataTableUser />} />
                                 <Route path="/commandes" element={<Commande />} />
+                                <Route path="/unique-commande/:id" element={<UniqueCommande />} />
+                                <Route path="/produit" element={<Produit />} />
+                                <Route path="/detail/commande" element={<DetailCommande />} />
                                 {/* Définissez d'autres routes pour vos autres composants/pages ici. */}
                             </Routes>
                         </div>
