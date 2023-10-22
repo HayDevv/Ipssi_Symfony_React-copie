@@ -2,6 +2,8 @@
 
 Ce projet a été réalisé par Boutabba AbdelHay, Azzouni Bilele et Ismail Aymane.
 
+- Url du projet Symfony : 
+
 ## Démarrage de l'application React
 
 Pour lancer le projet, exécutez la commande suivante :
