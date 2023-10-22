@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import dataFixtures from './dataFixtures';
 import {useParams} from 'react-router-dom';
-import {type} from "@testing-library/user-event/dist/type";
 import {deleteMethod, getMethod} from "../function/httpFunction";
+import {httpURL} from "../function/httpURL";
 
+const url = httpURL
 
 const DetailsCommandes = () => {
     const [detailsCommande, setDetailsProduit] = useState([]);
@@ -61,7 +62,7 @@ const DetailsCommandes = () => {
 
         let numberQuantite = Number(quantite)
 
-        let response = await fetch(`https://localhost:8000/api/detail_commandes`, {
+        let response = await fetch(`${url}detail_commandes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/ld+json'

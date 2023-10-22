@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import dataFixtures from './dataFixtures';
-import {useParams} from 'react-router-dom';
 import {deleteMethod, getMethod} from "../function/httpFunction";
+import {httpURL} from "../function/httpURL";
 
+
+const url = httpURL
 
 const Produit = () => {
     const [produits, setProduits] = useState([]);
@@ -35,7 +36,7 @@ const Produit = () => {
         prix = Number(prix)
         stock = Number(stock)
 
-       return  await fetch('https://localhost:8000/api/produits', {
+       return  await fetch(`${url}produits`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/ld+json'

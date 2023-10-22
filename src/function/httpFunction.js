@@ -1,5 +1,6 @@
+const url = 'https://localhost:8000/api/'
 export async function getMethod(endpoint) {
-    const response = await fetch(`https://localhost:8000/api/${endpoint}`);
+    const response = await fetch(`${url}${endpoint}`);
     const data = await response.json();
     const users = data['hydra:member'];
     const usersArray = [];
@@ -12,7 +13,7 @@ export async function getMethod(endpoint) {
 }
 
 export async function updateMethod(id, object,endpoint) {
-    return await fetch(`https://localhost:8000/api/${endpoint}/${id}`, {
+    return await fetch(`${url}${endpoint}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/ld+json'
@@ -22,7 +23,7 @@ export async function updateMethod(id, object,endpoint) {
 }
 
 export async function deleteMethod(id, endpoint) {
-    return await fetch(`https://localhost:8000/api/${endpoint}/${id}`, {
+    return await fetch(`${url}${endpoint}/${id}`, {
         method: 'DELETE'
     })
 }

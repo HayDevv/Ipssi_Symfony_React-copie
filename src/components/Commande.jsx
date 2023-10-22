@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import dataFixtures from './dataFixtures';
-import {deleteMethod, getCommandes, getMethod} from "../function/httpFunction";
-import {getUsers} from "../function/userFunction";
+import {deleteMethod, getMethod} from "../function/httpFunction";
+import {httpURL} from "../function/httpURL";
+
+const url = httpURL
 
 const Commande = () => {
-    const [data, setData] = useState(dataFixtures);
-    const [newItem, setNewItem] = useState({id: '', nom: '', prenom: '', age: '', email: '', commandes: ''});
     const [editingId, setEditingId] = useState(null);
     const [commandes, setCommandes] = useState([]);
     const [users, setUsers] = useState([]);
-    const [userId, setUserId] = useState('');
+
     const [selectedUser, setSelectedUser] = useState(''); // État pour stocker l'utilisateur sélectionné
 
 
@@ -42,7 +42,7 @@ const Commande = () => {
 
     async function createUser(nom, prenom, age, email) {
         age = Number(age)
-        let response = await fetch('https://localhost:8000/api/utilisateurs', {
+        let response = await fetch(`${url}utilisateurs`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/ld+json'
@@ -58,10 +58,6 @@ const Commande = () => {
         }
     }
 
-    function handleUserChange(e){
-        setUserId(e.target.value)
-    }
-
     const handleChange = (event) => {
         setSelectedUser(event.target.value); // Mettre à jour l'état avec la valeur sélectionnée
     };
@@ -74,7 +70,7 @@ const Commande = () => {
         }
         console.log(selectedUser);
 
-        let response = await fetch(`https://localhost:8000/api/commandes`, {
+        let response = await fetch(`${url}commandes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/ld+json'

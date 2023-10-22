@@ -1,3 +1,6 @@
+import {httpURL} from "./httpURL";
+
+const url = httpURL
 export async function createUser(endpoint,...userData) {
     const userObject = {};
     const keys = ['nom', 'prenom', 'age', 'email'];
@@ -13,7 +16,7 @@ export async function createUser(endpoint,...userData) {
         }
     });
 
-    return await fetch(`https://localhost:8000/api/${endpoint}`, {
+    return await fetch(`${url}${endpoint}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/ld+json'

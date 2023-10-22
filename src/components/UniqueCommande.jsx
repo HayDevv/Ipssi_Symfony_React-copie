@@ -1,23 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import dataFixtures from './dataFixtures';
-import { useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom';
+import {deleteMethod} from "../function/httpFunction";
+import {httpURL} from "../function/httpURL";
 
+
+const url = httpURL
 
 const UniqueCommande = () => {
-    const [data, setData] = useState(dataFixtures);
-    const [newItem, setNewItem] = useState({id: '', nom: '', prenom: '', age: '', email: '', commandes: ''});
     const [editingId, setEditingId] = useState(null);
     const [commandes, setCommandes] = useState([]);
-    const [users, setUsers] = useState([]);
-    const [userId, setUserId] = useState('');
-    const [selectedUser, setSelectedUser] = useState(''); // État pour stocker l'utilisateur sélectionné
 
-    const { id } = useParams();
+
+    const {id} = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`https://localhost:8000/api/commande/user/${id}`)
+                const response = await fetch(`${url}commande/user/${id}`)
                 let data = await response.json()
                 console.log(data)
                 setCommandes(data)
@@ -29,9 +28,7 @@ const UniqueCommande = () => {
     }, []);
 
     async function handleDelete(id) {
-        let response = await fetch(`https://localhost:8000/api/commandes/${id}`, {
-            method: 'DELETE'
-        })
+        let response = await deleteMethod('commandes', id)
         const status = response.status;
 
         if (status === 204) {

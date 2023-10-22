@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom';
 import dataFixtures from './dataFixtures';
 import {createUser} from '../function/userFunction'
 import {deleteMethod, getMethod, updateMethod} from "../function/httpFunction";
