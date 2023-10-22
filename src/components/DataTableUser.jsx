@@ -94,23 +94,6 @@ const DataTableUser = () => {
 
         }
     };
-    // async function createUser(nom, prenom, age, email) {
-    //     age = Number(age)
-    //     let response = await fetch('https://localhost:8000/api/utilisateurs', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/ld+json'
-    //         },
-    //         body: JSON.stringify({nom, prenom, age, email})
-    //     })
-    //
-    //     const status = response.status;
-    //
-    //     if (status === 201) {
-    //         alert('Creation réussie.');
-    //         window.location.reload();
-    //     }
-    // }
 
     const handleAdd = async () => {
         if (!newItem.nom || !newItem.prenom || !newItem.age || !newItem.email) {

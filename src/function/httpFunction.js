@@ -1,4 +1,6 @@
-const url = 'https://localhost:8000/api/'
+import {httpURL} from "./httpURL";
+
+const url = httpURL
 export async function getMethod(endpoint) {
     const response = await fetch(`${url}${endpoint}`);
     const data = await response.json();
