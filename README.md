@@ -2,7 +2,7 @@
 
 Ce projet a été réalisé par Boutabba AbdelHay, Azzouni Bilele et Ismail Aymane.
 
-- Url du projet Symfony : 
+- Url du projet Symfony : https://github.com/AymaneIsmail/Ipssi_Symfony_Api
 
 ## Démarrage de l'application React
 
